@@ -1,5 +1,9 @@
 function [mu_rob,Brob,Crob,Wopt,evo] = rPCA(Xdata,im_sz,percvar)
 
+% Xdata is the vectorized matrix of images
+% im_sz is the size of the image
+% percvar is the desired percentage of variance to keep
+
 %collecting info
 p = size(Xdata,2);
 N = size(Xdata,1);
