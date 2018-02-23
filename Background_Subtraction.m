@@ -1,13 +1,15 @@
-%% ECE 7866 Computer Vision
-%  HW4
+
 %  Akinlawon Solomon
 
 %% Initialization
+% Implemented according to algorithm seen in Robust PCA Paper
+
 clear; close all; clc
 
-%% ================Data Pre-Processing=================
+%% ================ Data Pre-Processing =================
 
-imfile = dir('images4/');
+
+imfile = dir('images4/');                                % fill in image directory
 imgs = {imfile(~[imfile.isdir]).name};
 imsubset = 1:222;
 p = length(imsubset);
@@ -18,6 +20,7 @@ for i = 1:length(imsubset)
     imstcolor(:,:,:,i) = imread(imgs{1,imsubset(i)});
     imtemp = double(rgb2gray(imstcolor(:,:,:,i)));
     imstgray(:,:,i) = (imtemp/255);
+    
 end
 
 %Construct D matrix
@@ -31,13 +34,12 @@ end
 N = size(D,1);
 
 
-
-
 %% ============  Step 1: Robust PCA ===================
 [mu_rob,Brob,Crob,Wopt,evo] = rPCA(D,size(imtemp),55);
 
 clear J large closed new_img 
 disp('%==============================================================================%');
+
 %% ============= Step 2: Weighted PCA ================
 
 k = 25;
@@ -78,14 +80,13 @@ while iter<max_iter && flag
         flag = 0;
     end
     
-       
     fprintf('Iter:%d , Err:%.3f ,  angular_error: %.3f \n',iter,errpixtot, ang_err);   
     evo2(iter,:) = [errpixtot ang_err];
     iter = iter + 1;
     
 end
 
-%% ==============Display Images=================
+%%  ============== Display Images =================
 %Calculate Foreground Matrix S and Background Matrix L
 L = mu_rob + Brobw*Crobw;
 S = D - L;
@@ -104,6 +105,8 @@ imshow(closed)
 end
 
 hold off
+
+%% Create Video to show background subtraction (optional opening and closing transformations used)
 % writerObj = VideoWriter('myVideo.avi');
 % writerObj.FrameRate = 5;
 % open(writerObj);
